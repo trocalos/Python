@@ -1,0 +1,131 @@
+import math
+print("""Programa para realizar los cálculos de los parámetros de
+CORRIENTE ALTERNA en circuitos RLC paralelo.
+José Luis García Vázquez. Institut Sants (antes INS Emperador Carles) 2022
+
+""")
+V=eval(input("Introduce el voltaje del circuito: "))
+f=eval(input("\nIntroduce la frecuencia del circuito: "))
+R=eval(input("\nIntroduce el valor de la resistencia del circuito: "))
+C=eval(input("\nIntroduce el valor del condensador del circuito (los submúltiplos los pondrás luego): "))
+sm=input("Indica el submúltiplo correspondiente al condensador:\n 0 - ninguno \n m - mili \n u - micro - \n n - nano \n p - pico \n___")
+
+if sm=="0":
+    sC=1
+elif sm=="m":
+    sC=0.001
+elif sm=="u":
+    sC=0.000001
+elif sm=="n":
+    sC=0.000000001
+elif sm=="p":
+    sC=0.000000000001
+else:
+    sC=1
+    
+L=eval(input("\nIntroduce el valor de la bobina del circuito(los submúltiplos los pondrás luego): "))
+#Aquí calculo el valor de Xl y de Xc
+smL=input("Indica el submúltiplo correspondiente al condensador:\n 0 - ninguno \n m - mili \n u - micro - \n n - nano \n p - pico \n___")
+
+if smL=="0":
+    sL=1
+elif smL=="m":
+    sL=0.001
+elif smL=="u":
+    sL=0.000001
+elif smL=="n":
+    sL=0.000000001
+elif smL=="p":
+    sL=0.000000000001
+else:
+    sL=1
+    
+#Si C=0 tenemos un error en la división por 0    
+if C!=0:
+    Xc=(1/(2*math.pi*f*C*sC))
+else:
+        Xc=0
+
+Xl=(2*math.pi*f*L*sL)
+#Z=(((R**2)+((Xl-Xc)**2))**(1/2))
+#Z=eval(Z)
+
+#grados=(((90)*2*math.pi/360))
+if R>0:
+    cosrad=(R)/(((R**2)+((Xl-Xc)**2))**(1/2))
+else:
+        if Xl>Xc:
+            rad=math.pi/2
+        else:
+                rad=-math.pi/2
+
+
+grados=math.acos(cosrad)*360/(2*math.pi)
+if Xl<Xc:
+    grados=-grados
+    
+
+print("\nR=",R,"\u03A9")
+print("\nXc=",round(Xc,2),"\u03A9")
+print("\nXl=",round(Xl,2),"\u03A9")
+print("\nZ=",R,"+ j",round(Xl-Xc,2),"\u03A9")
+
+#Cálculo de intensidades
+Ir=V/R
+fiR=0
+print("I resistencia =",Ir,"A con un ángulo 0")
+if Xc>0:
+    Ic=V/Xc
+    fiXc=90
+    print("I conductancia =",round(Ic,3),"A con un ángulo de 90º")
+else:
+    Ic=0
+    fiXc=0
+    print("I conductancia =",Ic,"A con un ángulo de 0º")
+
+if Xl>0:
+    Il=V/Xl
+    fiXl=-90
+    print("I inductancia =",round(Il,3),"A con un ángulo de -90º")
+else:
+    Il=0
+    fiXl=0
+    print("I inductancia =",Il,"A con un ángulo de 0º")
+print("\nI total =",Ir,"+j",Ic-Il,"A")
+#mZ es el módulo de Z y fi es el argumento de Z
+#moduloZ=round(((R**2)+((Xl-Xc)**2))**(1/2),1)
+moduloI=round(((Ir**2)+((Ic-Il)**2))**(1/2),2)
+if Ir>0:
+    cosfiI=(Ir/moduloI)
+    grados=math.acos(cosfiI)*360/(2*math.pi)
+else:
+    senfiI=((Ic-Il)/moduloI)
+    grados=math.asin(senfiI)*360/(2*math.pi)
+        
+
+print("\nLa intensidad total que recorre el circuito es de ",round(moduloI,3),"amperios con")
+print("un desfase de",round(-grados,2),"º")
+
+#Calculo de Z
+#\u03A9 es el símbolo de omega
+Z=V/moduloI
+realZ=Z*math.cos(grados*2*math.pi/360)
+imagZ=Z*math.sin(grados*2*math.pi/360)
+print("parte real de Z: ",realZ)
+print("parte imaginaria de Z: ",imagZ)
+print("\nEn polar, Z tiene un módulo de",round(Z,2),"\u03A9 y un ángulo de",round(grados,2),"º")
+print("En rectangular, Z es",round(realZ,2),"+j(",round(imagZ,2),")\u03A9")
+
+
+print("\nVoltaje máximo:",round(V*(2**(1/2)),2))
+print("Intensidad máxima:",round(moduloI*(2**(1/2)),2))
+
+
+cosfi=(realZ/Z)
+
+senfi=((imagZ)/Z)
+
+print("\nPotencia activa:",round(V*moduloI*cosfi,2),"W")
+print("Potencia reactiva:",round(V*moduloI*senfi,2),"VA reactivos")
+print("Potencia aparente:",round(V*moduloI,2),"VA")
+print("Factor de Potencia:",round(cosfi,2))
