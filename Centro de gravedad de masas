@@ -1,0 +1,20 @@
+disposicion=input("Indica si la pieza está en vertical (v) u horizontal (h)")
+if disposicion=="h":
+    longitud=input("cual es la longitud?: ")
+    longitud=eval(longitud)
+    distanciaorigen=input("cual es la distancia al origen de la pieza?: ")
+    distanciaorigen=eval(distanciaorigen)
+    densidad=input("cual es la densidad en kg/m de la pieza?: ")
+    densidad=eval(densidad)
+
+    #Ahora calculo la mitad de la varilla
+    mitadpieza=longitud/2
+
+    print("la mitad de la pieza se encuentra a",mitadpieza,"m")
+    cgm=mitadpieza+distanciaorigen
+    print("la distancia desde el origen al cgm es",cgm)
+    print("la masa de la pieza es",densidad*longitud,"kg")
+if disposicion=="v":
+    print("la pieza esta en vertical")
+if disposicion!="v" or "h":
+    print("no has puesto las letras que tocaban, tontaina")
