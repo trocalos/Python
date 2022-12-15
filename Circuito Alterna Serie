@@ -1,0 +1,92 @@
+import math
+print("""Programa para realizar los cálculos de los parámetros de
+CORRIENTE ALTERNA en circuitos RLC serie.
+José Luis García Vázquez. Institut Sants (antes INS Emperador Carles) 2022
+
+""")
+V=eval(input("Introduce el voltaje del circuito: "))
+f=eval(input("\nIntroduce la frecuencia del circuito: "))
+R=eval(input("\nIntroduce el valor de la resistencia del circuito: "))
+C=eval(input("\nIntroduce el valor del condensador del circuito: "))
+sm=input("Indica el submúltiplo correspondiente al condensador:\n 0 - ninguno \n m - mili \n u - micro - \n n - nano \n p - pico \n___")
+
+if sm=="0":
+    sC=1
+elif sm=="m":
+    sC=0.001
+elif sm=="u":
+    sC=0.000001
+elif sm=="n":
+    sC=0.000000001
+elif sm=="p":
+    sC=0.000000000001
+else:
+    sC=1
+    
+L=eval(input("\nIntroduce el valor de la bobina del circuito: "))
+#Aquí calculo el valor de Xl y de Xc
+smL=input("Indica el submúltiplo correspondiente al condensador:\n 0 - ninguno \n m - mili \n u - micro - \n n - nano \n p - pico \n___")
+
+if smL=="0":
+    sL=1
+elif smL=="m":
+    sL=0.001
+elif smL=="u":
+    sL=0.000001
+elif smL=="n":
+    sL=0.000000001
+elif smL=="p":
+    sL=0.000000000001
+else:
+    sL=1
+    
+#Si C=0 tenemos un error en la división por 0    
+if C!=0:
+    Xc=(1/(2*math.pi*f*C*sC))
+else:
+        Xc=0
+
+Xl=(2*math.pi*f*L*sL)
+Z=(((R**2)+((Xl-Xc)**2))**(1/2))
+#Z=eval(Z)
+
+#grados=(((90)*2*math.pi/360))
+if R>0:
+    cosrad=(R)/(((R**2)+((Xl-Xc)**2))**(1/2))
+else:
+        if Xl>Xc:
+            rad=math.pi/2
+        else:
+                rad=-math.pi/2
+
+
+grados=math.acos(cosrad)*360/(2*math.pi)
+if Xl<Xc:
+    grados=-grados
+    
+
+print("\nR=",R)
+print("\nXc=",round(Xc,2))
+print("\nXl=",round(Xl,2))
+print("\nZ=",R,"+ j",round(Xl-Xc,2))
+
+#mZ es el módulo de Z y fi es el argumento de Z
+moduloZ=round(((R**2)+((Xl-Xc)**2))**(1/2),1)
+
+print("\nEn polar, Z tiene un módulo de",round(((R**2)+((Xl-Xc)**2))**(1/2),2),"y un ángulo de",round(grados,2),"º")
+
+I=V/Z
+print("\nLa intensidad que recorre el circuito es de ",round(I,3),"amperios con")
+print("un desfase de ",round(0-grados,2),"º")
+
+print("\nVoltaje máximo:",round(V*(2**(1/2)),2))
+print("Intensidad máxima:",round(I*(2**(1/2)),2))
+
+cosfi=(R/moduloZ)
+
+senfi=((Xl-Xc)/moduloZ)
+
+print("\nPotencia activa:",round(V*I*cosfi,2),"W")
+print("Potencia reactiva:",round(V*I*senfi,2),"VA reactivos")
+print("Potencia aparente:",round(V*I,2),"VA")
+print("Factor de Potencia:",round(cosfi,2))
